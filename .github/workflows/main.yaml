@@ -1,0 +1,50 @@
+---
+# NOTE: This file running validate by lint all yaml and python files
+name: Validate all files in codebase
+on: [push]
+jobs:
+  val-yaml:
+    name: Validate YAML files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Setup python with pip
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.12
+
+      - name: Install yamlint
+        run: pip install yamllint
+
+      - name: Echo yaml config to ignore line too long
+        run: |
+          echo "extends: default" > .yamllint
+          echo "rules:" >> .yamllint
+          echo "  line-length:" >> .yamllint
+          echo "    max: 120" >> .yamllint
+          echo "    level: warning" >> .yamllint
+          echo "  new-line-at-end-of-file:" >> .yamllint
+          echo "    level: warning" >> .yamllint
+
+      - name: Validate YAML files (including in subdirectories)
+        run: yamllint -f parsable -c .yamllint .
+
+  val-python:
+    name: Validate Python files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Setup python with pip
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.12
+
+      - name: Install flake8
+        run: pip install flake8
+
+      - name: Validate Python files (including in subdirectories)
+        run: flake8 .
