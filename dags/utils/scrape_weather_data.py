@@ -1,15 +1,15 @@
-import requests
+import contextlib
 import re
 import typing
-from bs4 import BeautifulSoup as soup
-import pandas as pd
-import contextlib
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
 from datetime import datetime, timedelta
 
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup as soup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 from utils.logger import logger
 
 

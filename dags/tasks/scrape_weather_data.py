@@ -1,13 +1,13 @@
 # dags/scrape.py
 
-from airflow.decorators import task
-from datetime import datetime
-import pandas as pd
 import os
+from datetime import datetime
 
+import pandas as pd
+from airflow.decorators import task
 from constants import AWS_CREDENTIALS, AWS_S3_BUCKET_NAME, REMOTE_CHROMEDRIVER_URL
-from utils.scrape_weather_data import WeatherScraper
 from utils.logger import logger
+from utils.scrape_weather_data import WeatherScraper
 
 
 @task.python(

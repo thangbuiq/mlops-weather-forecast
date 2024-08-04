@@ -1,7 +1,5 @@
 from airflow.decorators import dag
-
-from constants import SCHEDULE_INTERVAL, DAG_ARGS
-
+from constants import DAG_ARGS, SCHEDULE_INTERVAL
 from tasks.scrape_weather_data import scrape_weather_data
 
 
