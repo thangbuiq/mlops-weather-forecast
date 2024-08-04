@@ -1,3 +1,0 @@
-from dags.scrape import scrape_weather_data_task
-
-scrape_weather_data_task

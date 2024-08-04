@@ -9,15 +9,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from datetime import datetime, timedelta
-import logging
 
-# Set up logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.StreamHandler()],
-)
-logger = logging.getLogger(__name__)
+from utils.logger import logger
 
 
 class WeatherScraper:
@@ -31,7 +24,7 @@ class WeatherScraper:
         self.chromedriver_path = chromedriver_path
         self.headless = headless
         self.driver = None
-        self.latest_date = datetime.now() - timedelta(days=15)
+        self.last_fifteen_days = datetime.now() - timedelta(days=15)
         self.remote_driver = remote_driver
         self.remote_url = remote_url
         logger.info(
@@ -81,6 +74,13 @@ class WeatherScraper:
     def _generate_url(self, month: int, year: int) -> str:
         return f"https://www.timeanddate.com/weather/vietnam/ho-chi-minh/historic?month={month}&year={year}"
 
+    def get_15_latest_range(self) -> str:
+        return (
+            str(self.last_fifteen_days.strftime("%Y%m%d"))
+            + "-"
+            + str(datetime.now().strftime("%Y%m%d"))
+        )
+
     def get_latest_weather_data(self):
         now = datetime.now()
         current_month = now.month
@@ -113,7 +113,7 @@ class WeatherScraper:
                 value = option.get_attribute("value")
                 date_str = f"{value[:4]}-{value[4:6]}-{value[6:]}"
                 date = datetime.strptime(date_str, "%Y-%m-%d")
-                if date >= self.latest_date and date.month == previous_month:
+                if date >= self.last_fifteen_days and date.month == previous_month:
                     logger.info("Processing data for %s", option.text)
                     option.click()
                     with self.get_weather_data(
@@ -130,7 +130,7 @@ class WeatherScraper:
                 value = option.get_attribute("value")
                 date_str = f"{value[:4]}-{value[4:6]}-{value[6:]}"
                 date = datetime.strptime(date_str, "%Y-%m-%d")
-                if date >= self.latest_date and date.month == current_month:
+                if date >= self.last_fifteen_days and date.month == current_month:
                     logger.info("Processing data for %s", option.text)
                     option.click()
                     with self.get_weather_data(
