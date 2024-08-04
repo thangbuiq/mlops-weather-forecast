@@ -1,5 +1,5 @@
 # First-time build can take upto 10 mins.
-ARG AIRFLOW_IMAGE_NAME=apache/airflow:2.2.3
+ARG AIRFLOW_IMAGE_NAME=apache/airflow:slim-2.9.3
 FROM ${AIRFLOW_IMAGE_NAME}
 
 ENV AIRFLOW_HOME=/opt/airflow
@@ -25,9 +25,13 @@ RUN DOWNLOAD_URL="https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_l
 COPY airflow.requirements.txt .
 
 RUN python3 -m pip install --upgrade pip
+RUN python3 -m pip install --no-cache-dir psycopg2-binary==2.9.9
 RUN python3 -m pip install --no-cache-dir -r airflow.requirements.txt
 
 COPY scripts scripts
-RUN chmod +x scripts
+RUN chmod +x scripts/*
+RUN bash scripts/setup_selenium.sh
+
+COPY packages packages
 
 USER $AIRFLOW_UID

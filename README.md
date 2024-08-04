@@ -2,6 +2,8 @@
 
 A simple MLOps project using Apache Airflow to automate the training and deployment of a machine learning model.
 
+![flow](./README.svg)
+
 ## Getting Started
 
 1. Clone the repository
