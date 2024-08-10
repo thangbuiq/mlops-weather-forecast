@@ -22,7 +22,7 @@ RUN DOWNLOAD_URL="https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_l
     && java --version
 
 
-COPY airflow.requirements.txt .
+COPY docker/airflow/requirements.txt .
 
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install --no-cache-dir psycopg2-binary==2.9.9

@@ -1,4 +1,4 @@
-airflow_compose_file := ./airflow.docker-compose.yaml
+airflow_compose_file := './docker-compose.yaml'
 
 aup:
 	docker compose -f $(airflow_compose_file) up -d
