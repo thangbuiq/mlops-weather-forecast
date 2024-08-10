@@ -2,7 +2,7 @@
 
 A comprehensive MLOps project using Apache Airflow to automate the scraping, training, and visualization of weather forecast data.
 
-![flow](./README.svg)
+![flow](./docs/README.svg)
 
 ## Project Flow
 
@@ -29,7 +29,7 @@ docker compose up -f docker-compose.airflow.yaml
 
 3. Access the Airflow UI at [http://localhost:8080](http://localhost:8080).
 
-> **Note:** You can use the `.env.example` file to create a `.env` file with the necessary environment variables:
+> **Note:** You can use the `docs/.env.example` file to create a `.env` file with the necessary environment variables:
 > - `AIRFLOW_IMAGE_NAME`: Docker image tag for Airflow (e.g., `slim-2.9.3-python3.10`)
 > - `AIRFLOW_UID`: User ID for the Airflow user (e.g., `1000`)
 > - `_AIRFLOW_WWW_USER_USERNAME`: Username for accessing the Airflow UI

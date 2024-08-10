@@ -1,0 +1,8 @@
+# Jupyter notebook
+
+# To ignore it use below
+*.ipynb linguist-documentation
+
+# Makefile
+
+Makefile linguist-documentation
