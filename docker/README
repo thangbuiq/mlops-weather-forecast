@@ -1,5 +1,3 @@
-# Docker Directory
-
 This directory contains the Dockerfile and requirements.txt files for the weather forecast application.
 
 Please note that you may need to modify the docker-compose.yml file or the Dockerfile based on your specific requirements.

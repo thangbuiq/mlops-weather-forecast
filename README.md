@@ -2,7 +2,7 @@
 
 A comprehensive MLOps project using Apache Airflow to automate the scraping, training, and visualization of weather forecast data.
 
-![flow](./docs/README.svg)
+![flow](./docs/workflow.svg)
 
 ## Project Flow
 
