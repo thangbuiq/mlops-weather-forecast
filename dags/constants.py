@@ -1,3 +1,6 @@
+# dags/constants.py
+# NOTE: Constants file to store configurations for the DAG
+
 import os
 from datetime import datetime
 

@@ -2,6 +2,8 @@
 
 A comprehensive MLOps project using Apache Airflow to automate the scraping, training, and visualization of weather forecast data.
 
+> Training an RNN model with TensorFlow code is located in the `dags/utils/train_weather_data.py` file.
+
 ![flow](./docs/workflow.svg)
 
 ## Project Flow

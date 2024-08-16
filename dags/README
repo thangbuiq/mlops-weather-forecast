@@ -1,0 +1,7 @@
+This directory contains the logic and DAG tasks for the Airflow code. The code in this directory is responsible for:
+
+- Trains the RNN TensorFlow model.
+- Scrapes data from a website using Selenium.
+- Uploads the scraped data and the trained model to S3.
+
+Please refer to the individual scripts for more detailed instructions and usage examples.

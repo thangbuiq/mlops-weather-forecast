@@ -1,4 +1,4 @@
-# dags/scrape.py
+# dags/tasks/train_weather_data.py
 
 import os
 from datetime import datetime
@@ -31,7 +31,7 @@ def train_weather_data(s3_url: str):
         df=processed_data,
         column_name="wind_kmh",
         test_size=0.15,
-        num_epochs=50,
+        num_epochs=20,
     )
 
     logger.info(f"Wind accuracy: {accuracy_wind:.2f}%")

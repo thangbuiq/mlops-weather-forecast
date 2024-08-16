@@ -1,3 +1,6 @@
+# dags/main.py
+# NOTE: This is the main DAG file that orchestrates the tasks
+
 from airflow.decorators import dag
 from constants import DAG_ARGS, SCHEDULE_INTERVAL
 from tasks.scrape_weather_data import scrape_weather_data
