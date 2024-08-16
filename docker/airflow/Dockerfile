@@ -26,7 +26,7 @@ COPY docker/airflow/requirements.txt .
 
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install --no-cache-dir psycopg2-binary==2.9.9
-RUN python3 -m pip install --no-cache-dir -r airflow.requirements.txt
+RUN python3 -m pip install --no-cache-dir -r requirements.txt
 
 COPY scripts scripts
 RUN chmod +x scripts/*

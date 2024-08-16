@@ -1,12 +1,12 @@
 from airflow.decorators import dag
 from constants import DAG_ARGS, SCHEDULE_INTERVAL
 from tasks.scrape_weather_data import scrape_weather_data
-from tasks.test_predict_weather_data import test_predict_weather_data
+from tasks.train_weather_data import train_weather_data
 
 
 @dag(
     dag_id="weather_forecast",
-    description="Pipeline to scrape and predict weather data",
+    description="Pipeline to scrape and train weather data",
     default_args=DAG_ARGS,
     schedule_interval=SCHEDULE_INTERVAL,
     catchup=False,  # Ensure catchup is set based on your requirements
@@ -14,10 +14,10 @@ from tasks.test_predict_weather_data import test_predict_weather_data
 def generate_dag_weather_forecast():
     # Define tasks
     scrape_task = scrape_weather_data()
-    predict_task = test_predict_weather_data(scrape_task)
+    train_task = train_weather_data(scrape_task)
 
     # Set dependencies
-    scrape_task >> predict_task
+    scrape_task >> train_task
 
 
 generate_dag_weather_forecast()

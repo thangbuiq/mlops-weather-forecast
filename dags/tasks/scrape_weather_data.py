@@ -25,7 +25,7 @@ def scrape_weather_data():
     # NOTE: Upload the processed data to S3
     logger.info("Uploading weather data to S3")
     weather_date_range = scraper.get_15_latest_range()
-    weather_data_path = f"weather_data_{weather_date_range}.csv"
+    weather_data_path = f"{weather_date_range}/weather_data.csv"
     weather_data_url = f"s3://{AWS_S3_BUCKET_NAME}/{weather_data_path}"
     processed_data.to_csv(
         weather_data_url,

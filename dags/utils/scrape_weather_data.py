@@ -75,10 +75,10 @@ class WeatherScraper:
         return f"https://www.timeanddate.com/weather/vietnam/ho-chi-minh/historic?month={month}&year={year}"
 
     def get_15_latest_range(self) -> str:
-        return (
-            str(self.last_fifteen_days.strftime("%Y%m%d"))
+        return str(
+            (self.last_fifteen_days + timedelta(days=1)).strftime("%Y.%m.%d")
             + "-"
-            + str(datetime.now().strftime("%Y%m%d"))
+            + datetime.now().strftime("%Y.%m.%d")
         )
 
     def get_latest_weather_data(self):
@@ -89,39 +89,43 @@ class WeatherScraper:
 
         # Generate URLs for the current and previous month
         current_month_url = self._generate_url(current_month, current_year)
-        previous_month = current_month - 1 if current_month > 1 else 12
-        previous_year = current_year if current_month > 1 else current_year - 1
-        previous_month_url = self._generate_url(previous_month, previous_year)
-
-        logger.info(
-            "Starting data scraping for the current month URL: %s", current_month_url
-        )
-        logger.info(
-            "Starting data scraping for the previous month URL: %s", previous_month_url
-        )
 
         self._setup_driver()
         try:
             weather_data = {}
 
             # Process previous month data
-            self.driver.get(previous_month_url)
-            dropdown = self.driver.find_element(By.ID, "wt-his-select")
-            options = dropdown.find_elements(By.TAG_NAME, "option")
 
-            for option in options:
-                value = option.get_attribute("value")
-                date_str = f"{value[:4]}-{value[4:6]}-{value[6:]}"
-                date = datetime.strptime(date_str, "%Y-%m-%d")
-                if date >= self.last_fifteen_days and date.month == previous_month:
-                    logger.info("Processing data for %s", option.text)
-                    option.click()
-                    with self.get_weather_data(
-                        self.driver.page_source, False
-                    ) as weather:
-                        weather_data[value] = weather
+            if now < self.last_fifteen_days:
+                previous_month = current_month - 1 if current_month > 1 else 12
+                previous_year = current_year if current_month > 1 else current_year - 1
+                previous_month_url = self._generate_url(previous_month, previous_year)
+                logger.info(
+                    "Starting data scraping for the previous month URL: %s",
+                    previous_month_url,
+                )
+
+                self.driver.get(previous_month_url)
+                dropdown = self.driver.find_element(By.ID, "wt-his-select")
+                options = dropdown.find_elements(By.TAG_NAME, "option")
+
+                for option in options:
+                    value = option.get_attribute("value")
+                    date_str = f"{value[:4]}-{value[4:6]}-{value[6:]}"
+                    date = datetime.strptime(date_str, "%Y-%m-%d")
+                    if date >= self.last_fifteen_days and date.month == previous_month:
+                        logger.info("Processing data for %s", option.text)
+                        option.click()
+                        with self.get_weather_data(
+                            self.driver.page_source, False
+                        ) as weather:
+                            weather_data[value] = weather
 
             # Process current month data
+            logger.info(
+                "Starting data scraping for the current month URL: %s",
+                current_month_url,
+            )
             self.driver.get(current_month_url)
             dropdown = self.driver.find_element(By.ID, "wt-his-select")
             options = dropdown.find_elements(By.TAG_NAME, "option")
@@ -145,6 +149,22 @@ class WeatherScraper:
         finally:
             self.driver.quit()
             logger.info("WebDriver quit")
+
+    def categorize_weather(self, weather: str) -> str:
+        weather = weather.lower()  # Convert to lowercase
+        weather = weather.replace(".", "")  # Remove periods
+
+        # Keyword-based categorization
+        if "clear" in weather or "sunny" in weather or "warm" in weather:
+            return "Sunny"
+        elif "rain" in weather or "showers" in weather or "sprinkles" in weather:
+            return "Rain"
+        elif "thunder" in weather or "storm" in weather:
+            return "Storm"
+        elif "cloud" in weather or "fog" in weather or "overcast" in weather:
+            return "Cloudy"
+        else:
+            return "Sunny"
 
     def process_weather_data(self, weather_data: dict) -> pd.DataFrame:
         logger.info("Processing weather data")
@@ -203,6 +223,17 @@ class WeatherScraper:
             )
 
             merged_df = pd.concat([merged_df, df], ignore_index=True)
+
+        merged_df["Weather"] = merged_df["Weather"].apply(self.categorize_weather)
+        merged_df.columns = [
+            "time",
+            "temperature_c",
+            "weather",
+            "wind_kmh",
+            "humidity",
+            "barometer_mbar",
+        ]
+
         logger.info("Weather data processing completed")
         return merged_df
 
