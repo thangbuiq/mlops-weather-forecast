@@ -28,6 +28,8 @@ x-airflow-common:
     &airflow-common-depends-on
     postgres:
       condition: service_healthy
+  networks:
+    - airflow-net
 
 services:
   postgres:
@@ -43,6 +45,8 @@ services:
       interval: 5s
       retries: 5
     restart: always
+    networks:
+      - airflow-net
 
   selenium:
     container_name: remote_chromedriver
@@ -50,6 +54,8 @@ services:
     ports:
       - 4444:4444
     restart: always
+    networks:
+      - airflow-net
 
   airflow-webserver:
     <<: *airflow-common
@@ -158,5 +164,21 @@ services:
       - -c
       - airflow
 
+  mlflow:
+    container_name: mlops-weather-forecast-mlflow
+    image: bitnami/mlflow:2.15.1
+    ports:
+      - 5000:5000
+    environment:
+      - MLFLOW_SERVER_DEFAULT_ARTIFACT_ROOT=s3://${AWS_S3_BUCKET_NAME}/mlflow
+    # on 0.0.0.0
+    entrypoint: ["mlflow", "ui", "--host", "0.0.0.0"]
+    networks:
+      - airflow-net
+
 volumes:
   postgres-db-volume:
+
+networks:
+  airflow-net:
+    driver: bridge
